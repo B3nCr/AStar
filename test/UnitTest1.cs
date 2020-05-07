@@ -164,12 +164,31 @@ namespace test
 
         public char[][] Travel()
         {
-            // var possibleMoves = GetPossibleMoves(startingCoordinate);
-    
-            // foreach(var (moveX, moveY) in possibleMoves)
-            // {
+            var foundDestination = false;
+            var currentCoordinate = FindStartPoint();
+            var destinationCoordinate = FindEndPoint();
 
-            // }
+            while (!foundDestination)
+            {
+                var possibleMoves = GetPossibleMoves(currentCoordinate);
+                
+                Coordinate nextBestMove;
+                
+                foreach(var possibleMove in possibleMoves)
+                {
+                    if (possibleMove == destinationCoordinate)
+                    {
+                        foundDestination = true;
+                    }
+                    else
+                    {
+                        if (nextBestMove == default(Coordinate) || possibleMove.DistanceTo(destinationCoordinate) < nextBestMove.DistanceTo(destinationCoordinate))
+                        {
+                            nextBestMove = possible
+                        }
+                    }
+                }
+            }
 
             return new char[3][] 
             {
@@ -179,46 +198,54 @@ namespace test
             };
         }
 
+        private object FindEndPoint()
+        {
+            throw new NotImplementedException();
+        }
+
         private int MaxX => _map[0].Length-1;
         private int MaxY => _map.Length-1;
-
-        public Coordinate[] GetPossibleMoves()
+        
+        public Coordinate[] GetPossibleMovesFromCoordinate(Coordinate startingCoordinate)
         {
-            var startingCoordinate = FindStartPoint();
-
             var possibleMoves = new List<Coordinate>();
 
-            if(startingCoordinate.x < MaxX)
+            if(startingCoordinate.X < MaxX)
             {
-                possibleMoves.Add(new Coordinate(startingCoordinate.x+1, startingCoordinate.y));
+                possibleMoves.Add(new Coordinate(startingCoordinate.X+1, startingCoordinate.Y));
             }
 
-            if(startingCoordinate.y < MaxY)
+            if(startingCoordinate.Y < MaxY)
             {
-                possibleMoves.Add(new Coordinate(startingCoordinate.x, startingCoordinate.y+1));
+                possibleMoves.Add(new Coordinate(startingCoordinate.X, startingCoordinate.Y+1));
             }
 
-            if (startingCoordinate.x != 0)
+            if (startingCoordinate.X != 0)
             {
-                possibleMoves.Add(new Coordinate(startingCoordinate.x-1, startingCoordinate.y));
+                possibleMoves.Add(new Coordinate(startingCoordinate.X-1, startingCoordinate.Y));
             }
 
-            if (startingCoordinate.y != 0)
+            if (startingCoordinate.Y != 0)
             {
-                possibleMoves.Add(new Coordinate(startingCoordinate.x, startingCoordinate.y-1));
+                possibleMoves.Add(new Coordinate(startingCoordinate.X, startingCoordinate.Y-1));
             }
             
             return possibleMoves.ToArray();
         }
+        public Coordinate[] GetPossibleMoves()
+        {
+            var startingCoordinate = FindStartPoint();
+            return GetPossibleMovesFromCoordinate(startingCoordinate);
+        }
 
-        private (int x, int y) FindStartPoint()
+        private Coordinate FindStartPoint()
         {
             for (int rowIndex = 0 ;  rowIndex < _map.Length ; rowIndex ++)
             {
                 for (int cellIndex = 0 ;  cellIndex < _map.Length ; cellIndex ++)
                 {
                     if(_map[rowIndex][cellIndex] == 'S'){
-                        return (rowIndex,cellIndex);
+                        return new Coordinate(rowIndex,cellIndex);
                     }
                 }
             }
