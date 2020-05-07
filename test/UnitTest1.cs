@@ -167,40 +167,45 @@ namespace test
             var foundDestination = false;
             var currentCoordinate = FindStartPoint();
             var destinationCoordinate = FindEndPoint();
-
+            var solution = new List<char>();
+            
             while (!foundDestination)
             {
-                var possibleMoves = GetPossibleMoves(currentCoordinate);
+                var possibleMoves = GetPossibleMovesFromCoordinate(currentCoordinate);
                 
-                Coordinate nextBestMove;
+                Coordinate nextBestMove = default(Coordinate);
                 
                 foreach(var possibleMove in possibleMoves)
                 {
-                    if (possibleMove == destinationCoordinate)
+                    if (possibleMove.Equals(destinationCoordinate))
                     {
                         foundDestination = true;
+                        break;
                     }
                     else
                     {
-                        if (nextBestMove == default(Coordinate) || possibleMove.DistanceTo(destinationCoordinate) < nextBestMove.DistanceTo(destinationCoordinate))
+                        if (nextBestMove.Equals(default(Coordinate)) || 
+                        possibleMove.DistanceTo(destinationCoordinate) < nextBestMove.DistanceTo(destinationCoordinate))
                         {
-                            nextBestMove = possible
+                            nextBestMove = possibleMove;
                         }
                     }
+                }
+
+                currentCoordinate = nextBestMove;
+
+                if (!foundDestination)
+                {
+                    solution.Add('X');
                 }
             }
 
             return new char[3][] 
             {
                 new char[3] {'S','.','.'},
-                new char[3] {'X','.','.'},
+                solution.ToArray(),
                 new char[3] {'D','.','.'},
             };
-        }
-
-        private object FindEndPoint()
-        {
-            throw new NotImplementedException();
         }
 
         private int MaxX => _map[0].Length-1;
@@ -236,6 +241,21 @@ namespace test
         {
             var startingCoordinate = FindStartPoint();
             return GetPossibleMovesFromCoordinate(startingCoordinate);
+        }
+
+        private Coordinate FindEndPoint()
+        {        
+            for (int rowIndex = 0 ;  rowIndex < _map.Length ; rowIndex ++)
+            {
+                for (int cellIndex = 0 ;  cellIndex < _map.Length ; cellIndex ++)
+                {
+                    if(_map[rowIndex][cellIndex] == 'D'){
+                        return new Coordinate(rowIndex,cellIndex);
+                    }
+                }
+            }
+
+            throw new Exception("No end point");
         }
 
         private Coordinate FindStartPoint()
