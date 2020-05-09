@@ -64,6 +64,50 @@ namespace test
         }
 
         [Fact]
+        public void UseTileCostForRoute()
+        {
+            char[][] input = new char[2][]
+            {
+                new char[2] {'S','V'},
+                new char[2] {'.','D'}
+            };
+
+            var pathFinder = new Pathfinder(input);
+
+            var result = pathFinder.Travel();
+
+            char[][] expected = new char[2][]
+            {
+                new char[2] {'S','V'},
+                new char[2] {'X','D'}
+            };
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void UseTileCostForRoute2()
+        {
+            char[][] input = new char[2][]
+            {
+                new char[2] {'S','.'},
+                new char[2] {'V','D'}
+            };
+
+            var pathFinder = new Pathfinder(input);
+
+            var result = pathFinder.Travel();
+
+            char[][] expected = new char[2][]
+            {
+                new char[2] {'S','X'},
+                new char[2] {'V','D'}
+            };
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
         public void FindPossibleMoves_NoNegativeCoordinates()
         {
             char[][] input = new char[3][]

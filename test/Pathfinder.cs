@@ -35,6 +35,8 @@ namespace test
 
                 foreach (var possibleMove in possibleMoves)
                 {
+                    var tileCost = GetTileCost(possibleMove);
+
                     if (possibleMove.Equals(_endPoint))
                     {
                         foundDestination = true;
@@ -42,7 +44,7 @@ namespace test
                     }
                     else
                     {
-                        if (possibleMove.DistanceTo(_endPoint) < nextBestMove.DistanceTo(_endPoint))
+                        if (possibleMove.DistanceTo(_endPoint) + tileCost < nextBestMove.DistanceTo(_endPoint) + GetTileCost(nextBestMove))
                         {
                             nextBestMove = possibleMove;
                         }
@@ -60,6 +62,19 @@ namespace test
             return DrawResult();
         }
 
+        private int GetTileCost(Coordinate tile)
+        {
+            switch (_map[tile.X][tile.Y])
+            {
+                case '.':
+                    return 1;
+                case 'V':
+                    return 5;
+                default: 
+                return 1;
+            }
+        }
+
         private char[][] DrawResult()
         {
             List<char[]> result = new List<char[]>();
@@ -71,21 +86,13 @@ namespace test
                 {
                     var currentCoordinate = new Coordinate(rowIndex, colIndex);
 
-                    if (currentCoordinate.Equals(_startPoint))
-                    {
-                        row.Add('S');
-                    }
-                    else if (currentCoordinate.Equals(_endPoint))
-                    {
-                        row.Add('D');
-                    }
-                    else if (_route.Contains(currentCoordinate))
+                    if (_route.Contains(currentCoordinate))
                     {
                         row.Add('X');
                     }
                     else
                     {
-                        row.Add('.');
+                        row.Add(_map[rowIndex][colIndex]);
                     }
                 }
 
@@ -95,8 +102,8 @@ namespace test
             return result.ToArray();
         }
 
-        private int MaxX => _map[0].Length - 1;
-        private int MaxY => _map.Length - 1;
+        private int MaxX => _map.Length - 1;
+        private int MaxY => _map[0].Length - 1;
 
         public Coordinate[] GetPossibleMovesFromCoordinate(Coordinate startingCoordinate)
         {
