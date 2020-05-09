@@ -31,7 +31,12 @@ namespace test
             {
                 var possibleMoves = GetPossibleMovesFromCoordinate(currentCoordinate);
 
-                Coordinate nextBestMove = default(Coordinate);
+                if (possibleMoves.Length == 0)
+                {
+                    throw new Exception("No possible moves");
+                }
+
+                Coordinate nextBestMove = null;
 
                 foreach (var possibleMove in possibleMoves)
                 {
@@ -44,7 +49,8 @@ namespace test
                     }
                     else
                     {
-                        if (possibleMove.DistanceTo(_endPoint) + tileCost < nextBestMove.DistanceTo(_endPoint) + GetTileCost(nextBestMove))
+                        if (nextBestMove == null ||
+                         possibleMove.DistanceTo(_endPoint) + tileCost < nextBestMove.DistanceTo(_endPoint) + GetTileCost(nextBestMove))
                         {
                             nextBestMove = possibleMove;
                         }
@@ -70,8 +76,8 @@ namespace test
                     return 1;
                 case 'V':
                     return 5;
-                default: 
-                return 1;
+                default:
+                    return 1;
             }
         }
 
@@ -109,24 +115,27 @@ namespace test
         {
             var possibleMoves = new List<Coordinate>();
 
-            if (startingCoordinate.X < MaxX)
+            for (int rowIndex = startingCoordinate.X - 1; rowIndex <= startingCoordinate.X + 1; rowIndex++)
             {
-                possibleMoves.Add(new Coordinate(startingCoordinate.X + 1, startingCoordinate.Y));
-            }
+                if (rowIndex < 0)
+                {
+                    continue;
+                }
 
-            if (startingCoordinate.Y < MaxY)
-            {
-                possibleMoves.Add(new Coordinate(startingCoordinate.X, startingCoordinate.Y + 1));
-            }
+                for (int colIndex = startingCoordinate.Y - 1; colIndex <= startingCoordinate.Y + 1; colIndex++)
+                {
+                    if (colIndex < 0)
+                    {
+                        continue;
+                    }
 
-            if (startingCoordinate.X != 0)
-            {
-                possibleMoves.Add(new Coordinate(startingCoordinate.X - 1, startingCoordinate.Y));
-            }
+                    var possibleMove = new Coordinate(rowIndex, colIndex);
 
-            if (startingCoordinate.Y != 0)
-            {
-                possibleMoves.Add(new Coordinate(startingCoordinate.X, startingCoordinate.Y - 1));
+                    if (!possibleMove.Equals(startingCoordinate) && possibleMove.X <= MaxX && possibleMove.Y <= MaxY)
+                    {
+                        possibleMoves.Add(possibleMove);
+                    }
+                }
             }
 
             return possibleMoves.ToArray();
@@ -141,7 +150,7 @@ namespace test
         {
             for (int rowIndex = 0; rowIndex < _map.Length; rowIndex++)
             {
-                for (int cellIndex = 0; cellIndex < _map.Length; cellIndex++)
+                for (int cellIndex = 0; cellIndex < _map[rowIndex].Length; cellIndex++)
                 {
                     if (_map[rowIndex][cellIndex] == 'D')
                     {

@@ -29,6 +29,7 @@ namespace test
             Assert.Equal(expected, result);
         }
 
+        [Fact]
         public void TestBasicPathHasCorrectNumberOfPathNodes()
         {
             char[][] input = new char[3][]
@@ -68,8 +69,8 @@ namespace test
         {
             char[][] input = new char[2][]
             {
-                new char[2] {'S','V'},
-                new char[2] {'.','D'}
+                new char[3] {'S','V', '.'},
+                new char[3] {'.','.','D'}
             };
 
             var pathFinder = new Pathfinder(input);
@@ -78,8 +79,8 @@ namespace test
 
             char[][] expected = new char[2][]
             {
-                new char[2] {'S','V'},
-                new char[2] {'X','D'}
+                new char[3] {'S', 'V', '.'},
+                new char[3] {'.', 'X', 'D'}
             };
 
             Assert.Equal(expected, result);
@@ -90,8 +91,8 @@ namespace test
         {
             char[][] input = new char[2][]
             {
-                new char[2] {'S','.'},
-                new char[2] {'V','D'}
+                new char[3] {'S','.','.'},
+                new char[3] {'V','.','D'}
             };
 
             var pathFinder = new Pathfinder(input);
@@ -100,8 +101,8 @@ namespace test
 
             char[][] expected = new char[2][]
             {
-                new char[2] {'S','X'},
-                new char[2] {'V','D'}
+                new char[3] {'S','.','.'},
+                new char[3] {'V','X','D'}
             };
 
             Assert.Equal(expected, result);
@@ -224,7 +225,7 @@ namespace test
 
             var allChars = result.SelectMany(x => x);
 
-            Assert.Equal(3, allChars.Where(x => x == 'X').Count());
+            Assert.Equal(1, allChars.Where(x => x == 'X').Count());
         }
     }
 }
