@@ -6,8 +6,8 @@ namespace test
     public class Pathfinder
     {
         private readonly char[][] _map;
-        private readonly Coordinate _startPoint;
-        private readonly Coordinate _endPoint;
+        private readonly Tile _startPoint;
+        private readonly Tile _endPoint;
         private readonly List<Coordinate> _route = new List<Coordinate>();
         private readonly int _width;
         private readonly int _height;
@@ -28,7 +28,7 @@ namespace test
         public char[][] Travel()
         {
             var foundDestination = false;
-            var currentCoordinate = new Tile(_map[_startPoint.X][_startPoint.Y], _startPoint);
+            var currentCoordinate = _startPoint;
 
             while (!foundDestination)
             {
@@ -43,9 +43,7 @@ namespace test
 
                 foreach (var possibleMove in possibleMoves)
                 {
-                    // var tile = new Tile(_map[possibleMove.X][possibleMove.Y], possibleMove);
-
-                    if (possibleMove.Location.Equals(_endPoint))
+                    if (possibleMove.Equals(_endPoint))
                     {
                         foundDestination = true;
                         break;
@@ -53,7 +51,7 @@ namespace test
                     else
                     {
                         if (nextBestMove == null ||
-                         possibleMove.Location.DistanceTo(_endPoint) + possibleMove.Cost < nextBestMove.Location.DistanceTo(_endPoint) + nextBestMove.Cost)
+                         possibleMove.DistanceTo(_endPoint) + possibleMove.Cost < nextBestMove.DistanceTo(_endPoint) + nextBestMove.Cost)
                         {
                             nextBestMove = possibleMove;
                         }
@@ -136,7 +134,7 @@ namespace test
             return possibleMoves.ToArray();
         }
 
-        private Coordinate FindPoint(char tileType)
+        private Tile FindPoint(char tileType)
         {
             for (int rowIndex = 0; rowIndex < _map.Length; rowIndex++)
             {
@@ -144,7 +142,7 @@ namespace test
                 {
                     if (_map[rowIndex][cellIndex] == tileType)
                     {
-                        return new Coordinate(rowIndex, cellIndex);
+                        return new Tile(tileType, new Coordinate(rowIndex, cellIndex));
                     }
                 }
             }

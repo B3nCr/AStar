@@ -37,5 +37,9 @@ namespace test
             return (X << 2) ^ Y;
         }
 
+        public override string ToString() 
+        {
+            return $"X: {X} Y: {Y}";
+        }
     }
 }

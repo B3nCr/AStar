@@ -14,6 +14,11 @@ namespace test
 
         public Coordinate Location { get; }
 
+        public int DistanceTo(Tile tile)
+        {
+            return Location.DistanceTo(tile.Location);
+        }
+
         public int Cost
         {
             get
@@ -32,7 +37,6 @@ namespace test
 
         public override bool Equals(Object obj)
         {
-            //Check for null and compare run-time types.
             if ((obj == null) || !this.GetType().Equals(obj.GetType()))
             {
                 return false;
@@ -49,5 +53,9 @@ namespace test
             return Location.GetHashCode();
         }
 
+        public override string ToString() 
+        {
+            return $"Location: {Location}, Cost {Cost}";
+        }
     }
 }
