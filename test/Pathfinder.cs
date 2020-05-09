@@ -17,6 +17,7 @@ namespace test
             _map = map;
             _startPoint = FindStartPoint();
             _endPoint = FindEndPoint();
+
             _width = _map[0].Length;
             _height = _map.Length;
         }
@@ -41,8 +42,7 @@ namespace test
                     }
                     else
                     {
-                        if (nextBestMove.Equals(default(Coordinate)) ||
-                        possibleMove.DistanceTo(_endPoint) < nextBestMove.DistanceTo(_endPoint))
+                        if (possibleMove.DistanceTo(_endPoint) < nextBestMove.DistanceTo(_endPoint))
                         {
                             nextBestMove = possibleMove;
                         }
