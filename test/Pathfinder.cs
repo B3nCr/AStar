@@ -15,17 +15,20 @@ namespace test
         public Pathfinder(char[][] map)
         {
             _map = map;
-            _startPoint = FindStartPoint();
-            _endPoint = FindEndPoint();
+            _startPoint = FindPoint('S');
+            _endPoint = FindPoint('D');
 
             _width = _map[0].Length;
             _height = _map.Length;
         }
 
+        private int MaxX => _map.Length - 1;
+        private int MaxY => _map[0].Length - 1;
+
         public char[][] Travel()
         {
             var foundDestination = false;
-            var currentCoordinate = _startPoint;
+            var currentCoordinate = new Tile(_map[_startPoint.X][_startPoint.Y], _startPoint);
 
             while (!foundDestination)
             {
@@ -36,13 +39,13 @@ namespace test
                     throw new Exception("No possible moves");
                 }
 
-                Coordinate nextBestMove = null;
+                Tile nextBestMove = null;
 
                 foreach (var possibleMove in possibleMoves)
                 {
-                    var tileCost = GetTileCost(possibleMove);
+                    // var tile = new Tile(_map[possibleMove.X][possibleMove.Y], possibleMove);
 
-                    if (possibleMove.Equals(_endPoint))
+                    if (possibleMove.Location.Equals(_endPoint))
                     {
                         foundDestination = true;
                         break;
@@ -50,7 +53,7 @@ namespace test
                     else
                     {
                         if (nextBestMove == null ||
-                         possibleMove.DistanceTo(_endPoint) + tileCost < nextBestMove.DistanceTo(_endPoint) + GetTileCost(nextBestMove))
+                         possibleMove.Location.DistanceTo(_endPoint) + possibleMove.Cost < nextBestMove.Location.DistanceTo(_endPoint) + nextBestMove.Cost)
                         {
                             nextBestMove = possibleMove;
                         }
@@ -61,24 +64,11 @@ namespace test
 
                 if (!foundDestination)
                 {
-                    _route.Add(nextBestMove);
+                    _route.Add(nextBestMove.Location);
                 }
             }
 
             return DrawResult();
-        }
-
-        private int GetTileCost(Coordinate tile)
-        {
-            switch (_map[tile.X][tile.Y])
-            {
-                case '.':
-                    return 1;
-                case 'V':
-                    return 5;
-                default:
-                    return 1;
-            }
         }
 
         private char[][] DrawResult()
@@ -108,31 +98,36 @@ namespace test
             return result.ToArray();
         }
 
-        private int MaxX => _map.Length - 1;
-        private int MaxY => _map[0].Length - 1;
+        // public Tile[] GetPossibleMoves()
+        // {
+        //     var startingCoordinate = FindPoint('S');
+        //     return GetPossibleMovesFromCoordinate(new Tile(_map[startingCoordinate.X][startingCoordinate.Y], startingCoordinate));
+        // }
 
-        public Coordinate[] GetPossibleMovesFromCoordinate(Coordinate startingCoordinate)
+        public Tile[] GetPossibleMovesFromCoordinate(Tile startingTile)
         {
-            var possibleMoves = new List<Coordinate>();
+            var possibleMoves = new List<Tile>();
 
-            for (int rowIndex = startingCoordinate.X - 1; rowIndex <= startingCoordinate.X + 1; rowIndex++)
+            for (int rowIndex = startingTile.Location.X - 1; rowIndex <= startingTile.Location.X + 1; rowIndex++)
             {
                 if (rowIndex < 0)
                 {
                     continue;
                 }
 
-                for (int colIndex = startingCoordinate.Y - 1; colIndex <= startingCoordinate.Y + 1; colIndex++)
+                for (int colIndex = startingTile.Location.Y - 1; colIndex <= startingTile.Location.Y + 1; colIndex++)
                 {
                     if (colIndex < 0)
                     {
                         continue;
                     }
 
-                    var possibleMove = new Coordinate(rowIndex, colIndex);
+                    var possibleCoordinate = new Coordinate(rowIndex, colIndex);
 
-                    if (!possibleMove.Equals(startingCoordinate) && possibleMove.X <= MaxX && possibleMove.Y <= MaxY)
+                    if (!possibleCoordinate.Equals(startingTile.Location) && possibleCoordinate.X <= MaxX && possibleCoordinate.Y <= MaxY)
                     {
+                        var possibleMove = new Tile(_map[rowIndex][colIndex], possibleCoordinate);
+
                         possibleMoves.Add(possibleMove);
                     }
                 }
@@ -140,42 +135,21 @@ namespace test
 
             return possibleMoves.ToArray();
         }
-        public Coordinate[] GetPossibleMoves()
-        {
-            var startingCoordinate = FindStartPoint();
-            return GetPossibleMovesFromCoordinate(startingCoordinate);
-        }
 
-        private Coordinate FindEndPoint()
+        private Coordinate FindPoint(char tileType)
         {
             for (int rowIndex = 0; rowIndex < _map.Length; rowIndex++)
             {
                 for (int cellIndex = 0; cellIndex < _map[rowIndex].Length; cellIndex++)
                 {
-                    if (_map[rowIndex][cellIndex] == 'D')
+                    if (_map[rowIndex][cellIndex] == tileType)
                     {
                         return new Coordinate(rowIndex, cellIndex);
                     }
                 }
             }
 
-            throw new Exception("No end point");
-        }
-
-        private Coordinate FindStartPoint()
-        {
-            for (int rowIndex = 0; rowIndex < _map.Length; rowIndex++)
-            {
-                for (int cellIndex = 0; cellIndex < _map[rowIndex].Length; cellIndex++)
-                {
-                    if (_map[rowIndex][cellIndex] == 'S')
-                    {
-                        return new Coordinate(rowIndex, cellIndex);
-                    }
-                }
-            }
-
-            throw new Exception("No starting point");
+            throw new Exception("Can't find tile");
         }
     }
 }
