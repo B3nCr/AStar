@@ -25,7 +25,6 @@ namespace test
         {
             var foundDestination = false;
             var currentCoordinate = _startPoint;
-            var solution = new List<char>();
 
             while (!foundDestination)
             {
@@ -55,14 +54,13 @@ namespace test
                 if (!foundDestination)
                 {
                     _route.Add(nextBestMove);
-                    solution.Add('X');
                 }
             }
 
-            return DrawResult(solution);
+            return DrawResult();
         }
 
-        private char[][] DrawResult(List<char> solution)
+        private char[][] DrawResult()
         {
             List<char[]> result = new List<char[]>();
             for (int rowIndex = 0; rowIndex < _height; rowIndex++)
