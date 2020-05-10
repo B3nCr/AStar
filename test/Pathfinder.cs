@@ -6,8 +6,8 @@ namespace test
     public class Pathfinder
     {
         private readonly char[][] _map;
-        private readonly Tile _startPoint;
-        private readonly Tile _endPoint;
+        private readonly Tile _startTile;
+        private readonly Tile _endTile;
         private readonly List<Coordinate> _route = new List<Coordinate>();
         private readonly int _width;
         private readonly int _height;
@@ -15,8 +15,8 @@ namespace test
         public Pathfinder(char[][] map)
         {
             _map = map;
-            _startPoint = FindPoint('S');
-            _endPoint = FindPoint('D');
+            _startTile = FindTile('S');
+            _endTile = FindTile('D');
 
             _width = _map[0].Length;
             _height = _map.Length;
@@ -28,22 +28,22 @@ namespace test
         public char[][] Travel()
         {
             var foundDestination = false;
-            var currentCoordinate = _startPoint;
+            var currentTile = _startTile;
 
             while (!foundDestination)
             {
-                var possibleMoves = GetPossibleMovesFromCoordinate(currentCoordinate);
+                var possibleTiles = GetPossbileTiles(currentTile);
 
-                if (possibleMoves.Length == 0)
+                if (possibleTiles.Length == 0)
                 {
                     throw new Exception("No possible moves");
                 }
 
                 Tile nextBestMove = null;
 
-                foreach (var possibleMove in possibleMoves)
+                foreach (var possibleTile in possibleTiles)
                 {
-                    if (possibleMove.Equals(_endPoint))
+                    if (possibleTile.Equals(_endTile))
                     {
                         foundDestination = true;
                         break;
@@ -51,14 +51,14 @@ namespace test
                     else
                     {
                         if (nextBestMove == null ||
-                         possibleMove.DistanceTo(_endPoint) + possibleMove.Cost < nextBestMove.DistanceTo(_endPoint) + nextBestMove.Cost)
+                         possibleTile.DistanceTo(_endTile) + possibleTile.Cost < nextBestMove.DistanceTo(_endTile) + nextBestMove.Cost)
                         {
-                            nextBestMove = possibleMove;
+                            nextBestMove = possibleTile;
                         }
                     }
                 }
 
-                currentCoordinate = nextBestMove;
+                currentTile = nextBestMove;
 
                 if (!foundDestination)
                 {
@@ -102,7 +102,7 @@ namespace test
         //     return GetPossibleMovesFromCoordinate(new Tile(_map[startingCoordinate.X][startingCoordinate.Y], startingCoordinate));
         // }
 
-        public Tile[] GetPossibleMovesFromCoordinate(Tile startingTile)
+        public Tile[] GetPossbileTiles(Tile startingTile)
         {
             var possibleMoves = new List<Tile>();
 
@@ -134,7 +134,7 @@ namespace test
             return possibleMoves.ToArray();
         }
 
-        private Tile FindPoint(char tileType)
+        private Tile FindTile(char tileType)
         {
             for (int rowIndex = 0; rowIndex < _map.Length; rowIndex++)
             {
