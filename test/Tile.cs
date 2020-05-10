@@ -18,6 +18,11 @@ namespace test
         {
             return Location.DistanceTo(tile.Location);
         }
+        
+        public bool IsPassable()
+        {
+            return type != '#';
+        }
 
         public int Cost
         {
@@ -53,7 +58,7 @@ namespace test
             return Location.GetHashCode();
         }
 
-        public override string ToString() 
+        public override string ToString()
         {
             return $"Location: {Location}, Cost {Cost}";
         }

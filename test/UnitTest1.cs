@@ -30,6 +30,30 @@ namespace test
         }
 
         [Fact]
+        public void UnpassableTerrain()
+        {
+            char[][] input = new char[3][]
+                       {
+                new char[3] {'S','.','.'},
+                new char[3] {'#','#','.'},
+                new char[3] {'D','.','.'},
+                       };
+
+            var pathFinder = new Pathfinder(input);
+
+            var result = pathFinder.Travel();
+
+            char[][] expected = new char[3][]
+            {
+                new char[3] {'S','X','.'},
+                new char[3] {'#','#','X'},
+                new char[3] {'D','X','.'},
+            };
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
         public void TestBasicPathHasCorrectNumberOfPathNodes()
         {
             char[][] input = new char[3][]

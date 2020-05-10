@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace test
 {
@@ -8,7 +9,7 @@ namespace test
         private readonly char[][] _map;
         private readonly Tile _startTile;
         private readonly Tile _endTile;
-        private readonly List<Coordinate> _route = new List<Coordinate>();
+        private readonly List<Tile> _route = new List<Tile>();
         private readonly int _width;
         private readonly int _height;
 
@@ -17,6 +18,8 @@ namespace test
             _map = map;
             _startTile = FindTile('S');
             _endTile = FindTile('D');
+
+            // _route.Add(_startTile);
 
             _width = _map[0].Length;
             _height = _map.Length;
@@ -62,7 +65,7 @@ namespace test
 
                 if (!foundDestination)
                 {
-                    _route.Add(nextBestMove.Location);
+                    _route.Add(nextBestMove);
                 }
             }
 
@@ -80,7 +83,7 @@ namespace test
                 {
                     var currentCoordinate = new Coordinate(rowIndex, colIndex);
 
-                    if (_route.Contains(currentCoordinate))
+                    if (_route.Any(x => x.Location.Equals(currentCoordinate)))
                     {
                         row.Add('X');
                     }
@@ -126,7 +129,10 @@ namespace test
                     {
                         var possibleMove = new Tile(_map[rowIndex][colIndex], possibleCoordinate);
 
-                        possibleMoves.Add(possibleMove);
+                        if (!_route.Contains(possibleMove) && possibleMove.IsPassable())
+                        {
+                            possibleMoves.Add(possibleMove);
+                        }
                     }
                 }
             }
