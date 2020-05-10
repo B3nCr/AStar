@@ -19,7 +19,7 @@ namespace test
             _startTile = FindTile('S');
             _endTile = FindTile('D');
 
-            // _route.Add(_startTile);
+            _route.Add(_startTile);
 
             _width = _map[0].Length;
             _height = _map.Length;
@@ -83,7 +83,7 @@ namespace test
                 {
                     var currentCoordinate = new Coordinate(rowIndex, colIndex);
 
-                    if (_route.Any(x => x.Location.Equals(currentCoordinate)))
+                    if (!_startTile.Location.Equals(currentCoordinate) &&  _route.Any(x => x.Location.Equals(currentCoordinate)))
                     {
                         row.Add('X');
                     }
